@@ -270,10 +270,32 @@
 
     <!-- Footer -->
     <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center text-xs text-gray-500 dark:text-gray-400">
-      <p>Weather data provided by <a href="https://openweathermap.org" class="underline hover:text-blue-500" target="_blank" rel="noopener">OpenWeatherMap</a></p>
+      <p>Designed and Developed by <a href="https://dk-pro-portfolio.web.app/" class="underline hover:text-blue-500" target="_blank" rel="noopener">DineshKumarV</a></p>
     </div>
   </div>
+  <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBuQkjkIRrSKU5hCTqsatxwdKGT0JklYt0",
+    authDomain: "weatherlywave.firebaseapp.com",
+    projectId: "weatherlywave",
+    storageBucket: "weatherlywave.firebasestorage.app",
+    messagingSenderId: "525303509680",
+    appId: "1:525303509680:web:456cafaca03840067d4175",
+    measurementId: "G-B0HZMEEMSD"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
   <script src="script.js"></script>
 </body>
 </html>
