@@ -1,4 +1,4 @@
-const apiKey = "caf87105fd3f266bec4127269ded93b4";
+const apiKey = "caf87105fd3f266bec4127269ded93b4"; // Replace with real API key
 
       async function getWeather() {
         const city = document.getElementById("cityInput").value.trim();
@@ -15,8 +15,8 @@ const apiKey = "caf87105fd3f266bec4127269ded93b4";
           document.getElementById("cityName").innerText = data.name;
           document.getElementById("description").innerText = data.weather[0].description;
           document.getElementById("temperature").innerText = `${data.main.temp} °C`;
+          document.getElementById("humidity").innerText = `Humidity: ${data.main.humidity}%`;
 
-          // Load animated weather icon
           const iconCode = data.weather[0].icon;
           const animatedIcons = {
             "01d": "https://www.amcharts.com/wp-content/uploads/2019/04/sun.svg",
@@ -40,9 +40,13 @@ const apiKey = "caf87105fd3f266bec4127269ded93b4";
           };
 
           document.getElementById("weatherIcon").src = animatedIcons[iconCode] || "";
-
           document.getElementById("weatherResult").classList.remove("hidden");
         } catch (error) {
           alert("Error: " + error.message);
         }
+      }
+
+      // Dark/Light mode toggle
+      function toggleTheme() {
+        document.documentElement.classList.toggle('dark');
       }
