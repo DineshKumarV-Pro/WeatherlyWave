@@ -3,29 +3,13 @@ let debounceTimer;
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
   updateDateTime();
   setInterval(updateDateTime, 60000);
   adjustViewportHeight();
   window.addEventListener('resize', adjustViewportHeight);
-  
-  // Theme toggle functionality
-  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-  
-  // Check for saved theme preference
-  if (localStorage.getItem('theme') === 'dark' || 
-      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
-  }
 
-  // Try to get weather by geolocation first
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      getWeatherByCoords,
-      () => console.log("Location access denied"),
-      { timeout: 5000 }
-    );
-  }
+  // Show Chennai weather by default
+  getWeatherByCity('Chennai');
 
   document.getElementById('cityInput').addEventListener('input', handleInput);
   document.getElementById('cityInput').addEventListener('focus', handleInput);
@@ -39,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('suggestions').classList.add('hidden');
     }
   });
+  
   const voiceSearchBtn = document.getElementById('voiceSearchBtn');
   if ('webkitSpeechRecognition' in window) {
     voiceSearchBtn.addEventListener('click', startVoiceRecognition);
@@ -46,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     voiceSearchBtn.classList.add('hidden');
   }
 });
+
 // Voice recognition function
 function startVoiceRecognition() {
   const recognition = new webkitSpeechRecognition();
@@ -82,36 +68,6 @@ function startVoiceRecognition() {
     voiceSearchBtn.classList.add('bg-blue-100', 'text-blue-600');
   }
 };
-
-// Initialize theme from localStorage
-function initTheme() {
-  const savedTheme = localStorage.getItem('theme') || 
-                     (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-  updateThemeIcon();
-}
-
-// Update theme icon based on current mode
-function updateThemeIcon() {
-  const icon = document.getElementById('themeIcon');
-  if (document.documentElement.classList.contains('dark')) {
-    icon.classList.remove('fa-moon');
-    icon.classList.add('fa-sun');
-    icon.classList.remove('moon-icon'); // Remove black color for sun
-  } else {
-    icon.classList.remove('fa-sun');
-    icon.classList.add('fa-moon');
-    icon.classList.add('moon-icon'); // Add black color for moon
-  }
-}
-
-// Toggle dark/light theme
-function toggleTheme() {
-  document.documentElement.classList.toggle('dark');
-  const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-  localStorage.setItem('theme', theme);
-  updateThemeIcon();
-}
 
 // Adjust for mobile viewport height
 function adjustViewportHeight() {
@@ -167,10 +123,10 @@ function displaySuggestions(suggestions) {
   
   suggestions.forEach(city => {
     const item = document.createElement('div');
-    item.className = 'p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-left text-gray-800 dark:text-gray-100 text-sm border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors';
+    item.className = 'p-3 hover:bg-gray-100 cursor-pointer text-left text-gray-800 text-sm border-b border-gray-100 last:border-0 transition-colors';
     item.innerHTML = `
       <div class="font-medium">${city.name}</div>
-      <div class="text-xs text-gray-500 dark:text-gray-400">${city.state ? city.state + ', ' : ''}${city.country}</div>
+      <div class="text-xs text-gray-500">${city.state ? city.state + ', ' : ''}${city.country}</div>
     `;
     item.onclick = () => {
       document.getElementById('cityInput').value = `${city.name}, ${city.country}`;
@@ -199,45 +155,17 @@ function handleInput() {
   }, 300);
 }
 
-// Clear any existing errors
-function clearErrors() {
-  const errorContainer = document.getElementById('errorContainer');
-  errorContainer.innerHTML = '';
-}
-
-// Show error message
-function showError(message) {
-  clearErrors();
-  const errorContainer = document.getElementById('errorContainer');
-  
-  const errorElement = document.createElement('div');
-  errorElement.className = 'bg-red-100 border border-red-200 text-red-700 px-4 py-2 rounded text-sm flex items-center gap-2';
-  errorElement.innerHTML = `
-    <i class="fas fa-exclamation-circle"></i>
-    <span>${message}</span>
-  `;
-  
-  errorContainer.appendChild(errorElement);
-}
-
-// Get weather data
-async function getWeather() {
-  const city = document.getElementById('cityInput').value.trim();
+// Get weather by city name (added this new function)
+async function getWeatherByCity(city) {
   const weatherInfo = document.getElementById("weatherInfo");
   const errorMsg = document.getElementById("errorMsg");
   const loader = document.getElementById("loader");
-
-  if (!city) {
-    showError("Please enter a city name");
-    return;
-  }
 
   loader.classList.remove("hidden");
   weatherInfo.classList.add("hidden");
   errorMsg.classList.add("hidden");
 
   try {
-    // Get both current weather and forecast in parallel
     const [weatherRes, forecastRes] = await Promise.all([
       fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`),
       fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`)
@@ -250,11 +178,22 @@ async function getWeather() {
     const forecastData = await forecastRes.json();
 
     displayWeatherData(weatherData, forecastData);
+    document.getElementById("cityInput").value = weatherData.name;
   } catch (err) {
     showError(err.message || "Failed to fetch weather data");
   } finally {
     loader.classList.add("hidden");
   }
+}
+
+// Get weather data
+async function getWeather() {
+  const city = document.getElementById('cityInput').value.trim();
+  if (!city) {
+    showError("Please enter a city name");
+    return;
+  }
+  getWeatherByCity(city);
 }
 
 // Get weather by coordinates
@@ -269,7 +208,6 @@ async function getWeatherByCoords(position) {
   errorMsg.classList.add("hidden");
 
   try {
-    // Get both current weather and forecast in parallel
     const [weatherRes, forecastRes] = await Promise.all([
       fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`),
       fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`)
@@ -358,12 +296,12 @@ function displayForecast(forecastData) {
     const temp = Math.round(day.main.temp);
 
     const forecastItem = document.createElement('div');
-    forecastItem.className = 'forecast-item bg-white/50 dark:bg-slate-700/50 p-1 sm:p-2 rounded-lg text-center';
+    forecastItem.className = 'forecast-item bg-white/50 p-1 sm:p-2 rounded-lg text-center';
     forecastItem.innerHTML = `
-      <p class="text-xs font-medium text-gray-600 dark:text-gray-300">${dayName}</p>
+      <p class="text-xs font-medium text-gray-600">${dayName}</p>
       <img src="https://openweathermap.org/img/wn/${iconCode}.png" alt="${day.weather[0].description}" 
            class="w-6 h-6 sm:w-8 sm:h-8 mx-auto my-1 weather-icon" />
-      <p class="text-xs sm:text-sm font-semibold text-gray-800 dark:text-white">${temp}°C</p>
+      <p class="text-xs sm:text-sm font-semibold text-gray-800">${temp}°C</p>
     `;
     forecastContainer.appendChild(forecastItem);
   });
@@ -392,63 +330,41 @@ function showError(message) {
 
 // Set background based on weather condition
 function setBackground(condition) {
-  const body = document.getElementById("body");
+  const body = document.body;
   
-  // Remove any existing weather-related classes
-  const classesToRemove = [
-    'from-blue-400', 'via-blue-300', 'to-blue-100', 'dark:from-blue-900', 'dark:via-blue-800', 'dark:to-blue-700',
-    'from-gray-400', 'via-gray-200', 'to-gray-100', 'dark:from-gray-700', 'dark:via-gray-600', 'dark:to-gray-500',
-    'from-blue-600', 'via-blue-400', 'to-blue-200', 'dark:from-blue-800', 'dark:via-blue-600', 'dark:to-blue-400',
-    'from-gray-800', 'via-gray-600', 'to-gray-300', 'dark:from-gray-900', 'dark:via-gray-800', 'dark:to-gray-700',
-    'from-blue-100', 'via-blue-50', 'to-white', 'dark:from-blue-300', 'dark:via-blue-200', 'dark:to-blue-100',
-    'from-gray-300', 'via-gray-200', 'to-gray-100', 'dark:from-gray-600', 'dark:via-gray-500', 'dark:to-gray-400',
-    'from-slate-400', 'via-slate-300', 'to-slate-100', 'dark:from-slate-700', 'dark:via-slate-600', 'dark:to-slate-500'
-  ];
+  // Clear any existing background styles
+  body.style.background = '';
+  body.className = ''; // Clear all classes
   
-  classesToRemove.forEach(cls => body.classList.remove(cls));
-
-  // Add new gradient classes based on condition and theme
-  let gradientClasses = [];
-  switch (condition) {
+  // Set new background based on weather condition
+  switch (condition.toLowerCase()) {
     case "clear":
-      gradientClasses = document.documentElement.classList.contains('dark') 
-        ? ['dark:from-blue-900', 'dark:via-blue-800', 'dark:to-blue-700']
-        : ['from-blue-400', 'via-blue-300', 'to-blue-100'];
+      body.style.background = 'linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)'; // Sunrise colors
       break;
     case "clouds":
-      gradientClasses = document.documentElement.classList.contains('dark') 
-        ? ['dark:from-gray-700', 'dark:via-gray-600', 'dark:to-gray-500']
-        : ['from-gray-400', 'via-gray-200', 'to-gray-100'];
+      body.style.background = 'linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%)'; // Cloudy gray
       break;
     case "rain":
+      body.style.background = 'linear-gradient(135deg, #005AA7 0%, #FFFDE4 100%)'; // Rainy blue
+      break;
     case "drizzle":
-      gradientClasses = document.documentElement.classList.contains('dark') 
-        ? ['dark:from-blue-800', 'dark:via-blue-600', 'dark:to-blue-400']
-        : ['from-blue-600', 'via-blue-400', 'to-blue-200'];
+      body.style.background = 'linear-gradient(135deg, #7F9EA8 0%, #4A6B7A 100%)'; // Light rain
       break;
     case "thunderstorm":
-      gradientClasses = document.documentElement.classList.contains('dark') 
-        ? ['dark:from-gray-900', 'dark:via-gray-800', 'dark:to-gray-700']
-        : ['from-gray-800', 'via-gray-600', 'to-gray-300'];
+      body.style.background = 'linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%)'; // Stormy
       break;
     case "snow":
-      gradientClasses = document.documentElement.classList.contains('dark') 
-        ? ['dark:from-blue-300', 'dark:via-blue-200', 'dark:to-blue-100']
-        : ['from-blue-100', 'via-blue-50', 'to-white'];
+      body.style.background = 'linear-gradient(135deg, #E6E9F0 0%, #eef2f3 100%)'; // Snow white
       break;
     case "mist":
     case "fog":
     case "haze":
-      gradientClasses = document.documentElement.classList.contains('dark') 
-        ? ['dark:from-gray-600', 'dark:via-gray-500', 'dark:to-gray-400']
-        : ['from-gray-300', 'via-gray-200', 'to-gray-100'];
+      body.style.background = 'linear-gradient(135deg, #C9D6FF 0%, #E2E2E2 100%)'; // Misty
       break;
     default:
-      gradientClasses = document.documentElement.classList.contains('dark') 
-        ? ['dark:from-slate-700', 'dark:via-slate-600', 'dark:to-slate-500']
-        : ['from-slate-400', 'via-slate-300', 'to-slate-100'];
+      body.style.background = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'; // Default
   }
-
-  // Add the base gradient class and the new gradient colors
-  body.classList.add('bg-gradient-to-br', ...gradientClasses);
+  
+  // Add smooth transition
+  body.style.transition = 'background 1s ease';
 }

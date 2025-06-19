@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth dark">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -26,7 +26,6 @@
       height: 100vh;
       font-family: 'Inter', sans-serif;
       transition: all 0.3s ease;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       background-size: cover;
       background-repeat: no-repeat;
       display: flex;
@@ -35,14 +34,11 @@
       margin: 0;
       padding: 0;
     }
-    .dark body {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    }
     
     .weather-card {
       width: 100%;
       max-width: 400px;
-      height: 100%;
+      height: auto;
       max-height: 100vh;
       background: rgba(255, 255, 255, 0.9);
       border-radius: 0;
@@ -56,8 +52,6 @@
       .weather-card {
         border-radius: 1rem;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        height: auto;
-        max-height: 90vh;
       }
     }
     .temp-display {
@@ -81,7 +75,11 @@
     /* Responsive styles */
     @media (max-width: 640px) {
       .weather-card {
-        max-width: 95%;
+        max-width: 95vw;
+        max-height: 90vh;
+        height: auto;
+        min-height: unset;
+        margin: 1rem auto;
       }
       .temp-display {
         font-size: 2.5rem;
@@ -97,6 +95,50 @@
     #voiceSearchBtn:active {
       transform: scale(0.95);
     }
+
+    /* Card view styles */
+    .weather-card {
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem 1.5rem;
+      margin: 1.5rem auto;
+      border: 1px solid #e5e7eb;
+    }
+    @media (max-width: 640px) {
+      .weather-card {
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        padding: 1rem 0.5rem;
+        margin: 1rem 0.25rem;
+        max-width: 95vw;
+        max-height: 90vh;
+        height: auto;
+        min-height: unset;
+      }
+    }
+    /* Add these styles to your existing style section */
+    .weather-clear {
+      transition: background 0.5s ease;
+    }
+    .weather-clouds {
+      transition: background 0.5s ease;
+    }
+    .weather-rain {
+      transition: background 0.5s ease;
+    }
+    .weather-thunderstorm {
+      transition: background 0.5s ease;
+    }
+    .weather-snow {
+      transition: background 0.5s ease;
+    }
+    .weather-mist {
+      transition: background 0.5s ease;
+    }
+    .weather-default {
+      transition: background 0.5s ease;
+    }
   </style>
 </head>
 <body id="body" class="transition-all duration-300">
@@ -104,10 +146,7 @@
     <!-- Header with search -->
     <div class="flex items-center justify-between mb-4">
       <img src="icons/icon-192.png" alt="WeatherlyWave Logo" class="w-8 h-8 mr-2 rounded" />
-      <h1 class="text-xl font-bold text-gray-800 dark:text-white">WeatherlyWave</h1>
-      <button id="themeToggle" class="p-1 rounded-full bg-white/20 hover:bg-white/30 transition">
-        <i id="themeIcon" class="fas fa-moon moon-icon"></i>
-      </button>
+      <h1 class="text-xl font-bold text-gray-800">WeatherlyWave</h1>
     </div>
     
     <div class="relative mb-4 flex items-center">
@@ -117,17 +156,17 @@
       <button id="voiceSearchBtn" class="ml-2 p-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600 transition">
         <i class="fas fa-microphone"></i>
       </button>
-      <div id="suggestions" class="hidden absolute z-20 w-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 top-full"></div>
+      <div id="suggestions" class="hidden absolute z-20 w-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 top-full"></div>
     </div>
     
-    <p class="text-xs text-gray-600 dark:text-gray-300" id="datetime"></p>
+    <p class="text-xs text-gray-600" id="datetime"></p>
     
     <!-- Main weather display -->
     <div id="weatherInfo" class="hidden mt-4">
       <div class="flex justify-between items-center mb-2">
         <div>
-          <h2 id="cityName" class="text-2xl font-bold text-gray-800 dark:text-white"></h2>
-          <p id="description" class="capitalize text-sm text-gray-600 dark:text-gray-300"></p>
+          <h2 id="cityName" class="text-2xl font-bold text-gray-800"></h2>
+          <p id="description" class="capitalize text-sm text-gray-600"></p>
         </div>
         <img id="weatherIcon" class="w-16 h-16" src="" alt="Weather Icon" />
       </div>
@@ -137,26 +176,26 @@
         <div class="grid grid-cols-2 gap-2 text-xs sm:text-sm w-full sm:w-auto">
           <div class="flex items-center gap-2">
             <i class="fas fa-wind text-blue-500"></i>
-            <span id="wind" class="text-gray-700 dark:text-gray-300"></span>
+            <span id="wind" class="text-gray-700"></span>
           </div>
           <div class="flex items-center gap-2">
             <i class="fas fa-tint text-blue-500"></i>
-            <span id="humidity" class="text-gray-700 dark:text-gray-300"></span>
+            <span id="humidity" class="text-gray-700"></span>
           </div>
           <div class="flex items-center gap-2">
             <i class="fas fa-tachometer-alt text-blue-500"></i>
-            <span id="pressure" class="text-gray-700 dark:text-gray-300"></span>
+            <span id="pressure" class="text-gray-700"></span>
           </div>
           <div class="flex items-center gap-2">
             <i class="fas fa-eye text-blue-500"></i>
-            <span id="visibility" class="text-gray-700 dark:text-gray-300"></span>
+            <span id="visibility" class="text-gray-700"></span>
           </div>
         </div>
       </div>
       
       <!-- Forecast cards -->
       <div class="mb-4">
-        <h3 class="text-base font-semibold text-gray-800 dark:text-white mb-2">5-Day Forecast</h3>
+        <h3 class="text-base font-semibold text-gray-800 mb-2">5-Day Forecast</h3>
         <div id="forecast" class="grid grid-cols-5 gap-2">
           <!-- Forecast items will be inserted here by JavaScript -->
         </div>
@@ -177,12 +216,12 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
         </svg>
-        <span class="text-xs text-gray-500 dark:text-gray-400">Fetching weather data...</span>
+        <span class="text-xs text-gray-500">Fetching weather data...</span>
       </div>
     </div>
     
     <!-- Error state -->
-    <div id="errorMsg" class="hidden p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-red-600 dark:text-red-300 text-center my-4">
+    <div id="errorMsg" class="hidden p-3 bg-red-50 rounded-lg text-red-600 text-center my-4">
       <div class="flex items-center justify-center gap-2">
         <i class="fas fa-exclamation-circle"></i>
         <span class="text-xs">City not found. Please try another location.</span>
@@ -190,7 +229,7 @@
     </div>
     
     <!-- Footer -->
-    <div class="p-3 border-t border-gray-100 dark:border-slate-700 text-center text-xs text-gray-500 dark:text-gray-400">
+    <div class="p-3 border-t border-gray-100 text-center text-xs text-gray-500">
       <p>Built by <a href="https://dineshkumar-pro.web.app/" class="text-blue-500 hover:underline" target="_blank">DineshKumarV</a></p>
     </div>
   </div>
