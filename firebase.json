@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "weatherlywave",
     "public": "public",
     "ignore": [
       "firebase.json",
