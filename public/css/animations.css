@@ -1,0 +1,453 @@
+/* Weather Icon Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+/* Weather-specific animations */
+.weather-icon.clear-day,
+.weather-icon.clear-night {
+    animation: rotate 20s linear infinite;
+}
+
+.weather-icon.partly-cloudy-day,
+.weather-icon.partly-cloudy-night,
+.weather-icon.cloudy {
+    animation: float 3s ease-in-out infinite;
+}
+
+.weather-icon.rain,
+.weather-icon.drizzle {
+    animation: bounce 2s infinite;
+}
+
+.weather-icon.thunderstorm {
+    animation: shake 0.5s infinite;
+}
+
+.weather-icon.snow {
+    animation: float 4s ease-in-out infinite;
+}
+
+.weather-icon.fog,
+.weather-icon.mist {
+    animation: pulse 2s infinite;
+}
+
+.weather-icon.wind {
+    animation: wave 2s ease-in-out infinite;
+}
+
+/* Hourly forecast animations */
+.hourly-item {
+    animation: slideInUp 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+.hourly-item:nth-child(1) { animation-delay: 0.1s; }
+.hourly-item:nth-child(2) { animation-delay: 0.2s; }
+.hourly-item:nth-child(3) { animation-delay: 0.3s; }
+.hourly-item:nth-child(4) { animation-delay: 0.4s; }
+.hourly-item:nth-child(5) { animation-delay: 0.5s; }
+.hourly-item:nth-child(6) { animation-delay: 0.6s; }
+.hourly-item:nth-child(7) { animation-delay: 0.7s; }
+.hourly-item:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Daily forecast animations */
+.daily-card {
+    animation: slideInLeft 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.daily-card:nth-child(1) { animation-delay: 0.1s; }
+.daily-card:nth-child(2) { animation-delay: 0.2s; }
+.daily-card:nth-child(3) { animation-delay: 0.3s; }
+.daily-card:nth-child(4) { animation-delay: 0.4s; }
+.daily-card:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Card hover effects */
+.weather-card:hover,
+.daily-card:hover,
+.hourly-item:hover {
+    animation: cardGlow 0.3s ease-in-out;
+}
+
+@keyframes cardGlow {
+    0% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+    50% { box-shadow: 0 12px 40px rgba(255, 255, 255, 0.1); }
+    100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+}
+
+/* Loading animations */
+.loading-skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Modal animations */
+.modal {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(5px);
+    }
+}
+
+.modal-content {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: scale(0.8) translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Button animations */
+.action-btn,
+.map-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before,
+.map-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.action-btn:active::before,
+.map-btn:active::before {
+    width: 100px;
+    height: 100px;
+}
+
+/* AQI value animation */
+#aqi-index {
+    animation: countUp 2s ease-out;
+}
+
+@keyframes countUp {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Temperature animation */
+#main-temp {
+    animation: tempChange 1s ease-out;
+}
+
+@keyframes tempChange {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Chart animations */
+.trend-chart {
+    animation: chartFadeIn 1s ease-out;
+}
+
+@keyframes chartFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Search suggestions animations */
+.suggestion-item {
+    animation: suggestionSlide 0.2s ease-out;
+    animation-fill-mode: both;
+}
+
+.suggestion-item:nth-child(1) { animation-delay: 0.05s; }
+.suggestion-item:nth-child(2) { animation-delay: 0.1s; }
+.suggestion-item:nth-child(3) { animation-delay: 0.15s; }
+.suggestion-item:nth-child(4) { animation-delay: 0.2s; }
+.suggestion-item:nth-child(5) { animation-delay: 0.25s; }
+
+@keyframes suggestionSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Toast animations */
+.toast {
+    animation: toastSlide 0.3s ease-out;
+}
+
+@keyframes toastSlide {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Offline indicator animation */
+.offline-indicator {
+    animation: offlineSlide 0.5s ease-out;
+}
+
+@keyframes offlineSlide {
+    from {
+        transform: translateX(-50%) translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Map layer transitions */
+.leaflet-layer {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Trend comparison animations */
+.trend-item {
+    animation: trendSlide 0.4s ease-out;
+    animation-fill-mode: both;
+}
+
+.trend-item:nth-child(1) { animation-delay: 0.1s; }
+.trend-item:nth-child(2) { animation-delay: 0.2s; }
+.trend-item:nth-child(3) { animation-delay: 0.3s; }
+.trend-item:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes trendSlide {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive animation adjustments */
+@media (max-width: 768px) {
+    .weather-icon {
+        animation-duration: 2s;
+    }
+    
+    .hourly-item,
+    .daily-card {
+        animation-duration: 0.4s;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .weather-icon,
+    .hourly-item,
+    .daily-card,
+    .trend-item,
+    .suggestion-item {
+        animation: none !important;
+    }
+    
+    .action-btn::before,
+    .map-btn::before {
+        transition: none !important;
+    }
+}
+
+/* Scroll-triggered animations */
+.fade-in-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Loading state animations */
+.loading-pulse {
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Weather condition specific effects */
+.weather-bg-clear {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.weather-bg-clouds {
+    background: linear-gradient(135deg, #757F9A 0%, #D7DDE8 100%);
+}
+
+.weather-bg-rain {
+    background: linear-gradient(135deg, #4B6CB7 0%, #182848 100%);
+}
+
+.weather-bg-snow {
+    background: linear-gradient(135deg, #E6DEDD 0%, #D1C4E9 100%);
+}
+
+.weather-bg-thunderstorm {
+    background: linear-gradient(135deg, #2C3E50 0%, #4A6741 100%);
+}
+
+/* Particle effects for weather conditions */
+.weather-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.rain-particle {
+    position: absolute;
+    width: 2px;
+    height: 15px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+    animation: rainFall 1s linear infinite;
+}
+
+@keyframes rainFall {
+    0% {
+        transform: translateY(-100vh);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+.snow-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    animation: snowFall 3s linear infinite;
+}
+
+@keyframes snowFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}

@@ -1,239 +1,334 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icons/icon-192.png" />
-  <meta name="theme-color" content="#3b82f6" />
-  <title>WeatherlyWave - Weather App</title>
-  
-  <!-- TailwindCSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  
-  <style>
-    :root {
-      --vh: 100vh;
-    }
-    body {
-      min-height: var(--vh);
-      height: 100vh;
-      font-family: 'Inter', sans-serif;
-      transition: all 0.3s ease;
-      background-size: cover;
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-      padding: 0;
-    }
+    <!-- Primary Meta Tags -->
+<title>WeatherlyWave</title>
+<meta name="title" content="WeatherlyWave">
+<meta name="description" content="WeatherlyWave - Your comprehensive weather companion with current conditions, forecasts, and air quality data.">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="WW.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2196F3">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://weatherlywave.app/"> <!-- Replace with your actual domain -->
+<meta property="og:title" content="WeatherlyWave">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://weatherlywave.app/">
+<meta property="twitter:title" content="WeatherlyWave">
+
+<!-- Viewport & Charset (Already present, but repeating for clarity) -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="WeatherlyWave">
+    <meta name="msapplication-TileColor" content="#2196F3">
+    <meta name="msapplication-tap-highlight" content="no">
     
-    .weather-card {
-      width: 100%;
-      max-width: 400px;
-      height: auto;
-      max-height: 100vh;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 0;
-      box-shadow: none;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-  
-    @media (min-width: 640px) {
-      .weather-card {
-        border-radius: 1rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-    }
-    .temp-display {
-      font-size: 3rem;
-      line-height: 1;
-      background: linear-gradient(to right, #3b82f6, #8b5cf6);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .search-input:focus {
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-    }
-    .forecast-item {
-      transition: all 0.2s ease;
-    }
-    .forecast-item:hover {
-      transform: translateY(-3px);
-    }
-
-    /* Responsive styles */
-    @media (max-width: 640px) {
-      .weather-card {
-        max-width: 95vw;
-        max-height: 90vh;
-        height: auto;
-        min-height: unset;
-        margin: 1rem auto;
-      }
-      .temp-display {
-        font-size: 2.5rem;
-      }
-    }
-    /* Add to your style section */
-    #voiceSearchBtn {
-      transition: all 0.2s ease;
-    }
-    #voiceSearchBtn:hover {
-      transform: scale(1.05);
-    }
-    #voiceSearchBtn:active {
-      transform: scale(0.95);
-    }
-
-    /* Card view styles */
-    .weather-card {
-      border-radius: 1rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-      background: rgba(255, 255, 255, 0.95);
-      padding: 2rem 1.5rem;
-      margin: 1.5rem auto;
-      border: 1px solid #e5e7eb;
-    }
-    @media (max-width: 640px) {
-      .weather-card {
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        padding: 1rem 0.5rem;
-        margin: 1rem 0.25rem;
-        max-width: 95vw;
-        max-height: 90vh;
-        height: auto;
-        min-height: unset;
-      }
-    }
-    /* Add these styles to your existing style section */
-    .weather-clear {
-      transition: background 0.5s ease;
-    }
-    .weather-clouds {
-      transition: background 0.5s ease;
-    }
-    .weather-rain {
-      transition: background 0.5s ease;
-    }
-    .weather-thunderstorm {
-      transition: background 0.5s ease;
-    }
-    .weather-snow {
-      transition: background 0.5s ease;
-    }
-    .weather-mist {
-      transition: background 0.5s ease;
-    }
-    .weather-default {
-      transition: background 0.5s ease;
-    }
-  </style>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://api.openweathermap.org">
+    <link rel="preconnect" href="https://tile.openweathermap.org">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
-<body id="body" class="transition-all duration-300">
-  <div class="weather-card p-6">
-    <!-- Header with search -->
-    <div class="flex items-center justify-between mb-4">
-      <img src="icons/icon-192.png" alt="WeatherlyWave Logo" class="w-8 h-8 mr-2 rounded" />
-      <h1 class="text-xl font-bold text-gray-800">WeatherlyWave</h1>
-    </div>
-    
-    <div class="relative mb-4 flex items-center">
-      <input id="cityInput" type="text" placeholder="Search city..."
-             class="search-input w-full p-3 pl-10 text-sm rounded-lg bg-white/20 placeholder-gray-500 text-gray-800 border border-gray-300 focus:outline-none focus:border-blue-500 transition" />
-      <i class="fas fa-search absolute left-3 top-3 text-gray-500"></i>
-      <button id="voiceSearchBtn" class="ml-2 p-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600 transition">
-        <i class="fas fa-microphone"></i>
-      </button>
-      <div id="suggestions" class="hidden absolute z-20 w-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 top-full"></div>
-    </div>
-    
-    <p class="text-xs text-gray-600" id="datetime"></p>
-    
-    <!-- Main weather display -->
-    <div id="weatherInfo" class="hidden mt-4">
-      <div class="flex justify-between items-center mb-2">
-        <div>
-          <h2 id="cityName" class="text-2xl font-bold text-gray-800"></h2>
-          <p id="description" class="capitalize text-sm text-gray-600"></p>
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-spinner"></div>
+            <p>Loading WeatherlyWave...</p>
         </div>
-        <img id="weatherIcon" class="w-16 h-16" src="" alt="Weather Icon" />
-      </div>
-      
-      <div class="flex flex-col sm:flex-row items-center justify-between mb-4">
-        <div class="temp-display font-bold" id="temp"></div>
-        <div class="grid grid-cols-2 gap-2 text-xs sm:text-sm w-full sm:w-auto">
-          <div class="flex items-center gap-2">
-            <i class="fas fa-wind text-blue-500"></i>
-            <span id="wind" class="text-gray-700"></span>
-          </div>
-          <div class="flex items-center gap-2">
-            <i class="fas fa-tint text-blue-500"></i>
-            <span id="humidity" class="text-gray-700"></span>
-          </div>
-          <div class="flex items-center gap-2">
-            <i class="fas fa-tachometer-alt text-blue-500"></i>
-            <span id="pressure" class="text-gray-700"></span>
-          </div>
-          <div class="flex items-center gap-2">
-            <i class="fas fa-eye text-blue-500"></i>
-            <span id="visibility" class="text-gray-700"></span>
-          </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="WW.png" alt="WeatherlyWave Logo" class="logo-img">
+                        <h1>WeatherlyWave</h1>
+                    </div>
+                    <div class="header-actions">
+                        <button id="search-btn" class="action-btn" aria-label="Search location">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button id="location-btn" class="action-btn" aria-label="Use current location">
+                            <i class="fas fa-location-arrow"></i>
+                        </button>
+                        <button id="settings-btn" class="action-btn" aria-label="Settings">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Modal -->
+        <div id="search-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Search Location</h2>
+                    <button id="close-search" class="close-btn">&times;</button>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Enter city name..." autocomplete="off">
+                    <div id="search-suggestions" class="suggestions"></div>
+                </div>
+                <div class="recent-locations">
+                    <h3>Recent Locations</h3>
+                    <div id="recent-list" class="recent-list"></div>
+                </div>
+            </div>
         </div>
-      </div>
-      
-      <!-- Forecast cards -->
-      <div class="mb-4">
-        <h3 class="text-base font-semibold text-gray-800 mb-2">5-Day Forecast</h3>
-        <div id="forecast" class="grid grid-cols-5 gap-2">
-          <!-- Forecast items will be inserted here by JavaScript -->
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Current Weather Section -->
+                <section class="current-weather">
+                    <div class="weather-card">
+                        <div class="weather-header">
+                            <div class="location-info">
+                                <h2 id="current-location">Chennai, IN</h2>
+                                <p id="current-date">Thu, Jul 10, 04:58:59 PM</p>
+                            </div>
+                            <div class="weather-icon-container">
+                                <div id="weather-icon" class="weather-icon"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="weather-main">
+                            <div class="temperature">
+                                <span id="main-temp">31°C</span>
+                                <span id="weather-desc">overcast clouds</span>
+                            </div>
+                            <div class="weather-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-wind"></i>
+                                    <span id="wind-speed">25 km/h</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-tint"></i>
+                                    <span id="humidity">73%</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-thermometer-half"></i>
+                                    <span id="pressure">1003 hPa</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span id="visibility">10.0 km</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sun-times">
+                            <div class="sun-item">
+                                <i class="fas fa-sun"></i>
+                                <div>
+                                    <span class="label">Sunrise</span>
+                                    <span id="sunrise">6:24 AM</span>
+                                </div>
+                            </div>
+                            <div class="sun-item">
+                                <i class="fas fa-moon"></i>
+                                <div>
+                                    <span class="label">Sunset</span>
+                                    <span id="sunset">6:45 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Hourly Forecast -->
+                <section class="hourly-forecast">
+                    <h2>48-Hour Forecast</h2>
+                    <div class="hourly-container">
+                        <div id="hourly-timeline" class="hourly-timeline"></div>
+                    </div>
+                </section>
+
+                <!-- 5-Day Forecast -->
+                <section class="daily-forecast">
+                    <h2>5-Day Forecast</h2>
+                    <div id="daily-cards" class="daily-cards"></div>
+                </section>
+
+                <!-- Air Quality Section -->
+                <section class="air-quality">
+                    <h2>Air Quality</h2>
+                    <div id="air-quality-card" class="air-quality-card">
+                        <div class="aqi-main">
+                            <div class="aqi-value">
+                                <span id="aqi-index">-</span>
+                                <span id="aqi-label">Loading...</span>
+                            </div>
+                            <div class="aqi-description">
+                                <p id="aqi-desc">Checking air quality...</p>
+                            </div>
+                        </div>
+                        <div class="aqi-components">
+                            <div class="component">
+                                <span class="label">PM2.5</span>
+                                <span id="pm25">-</span>
+                            </div>
+                            <div class="component">
+                                <span class="label">PM10</span>
+                                <span id="pm10">-</span>
+                            </div>
+                            <div class="component">
+                                <span class="label">O₃</span>
+                                <span id="o3">-</span>
+                            </div>
+                            <div class="component">
+                                <span class="label">NO₂</span>
+                                <span id="no2">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weather Maps -->
+                <section class="weather-maps">
+                    <h2>Weather Maps</h2>
+                    <div class="map-controls">
+                        <button class="map-btn active" data-layer="temp">Temperature</button>
+                        <button class="map-btn" data-layer="precipitation">Precipitation</button>
+                        <button class="map-btn" data-layer="clouds">Clouds</button>
+                        <button class="map-btn" data-layer="wind">Wind</button>
+                    </div>
+                    <div id="weather-map" class="weather-map"></div>
+                </section>
+
+                <!-- Weather Trends -->
+                <section class="weather-trends">
+                    <h2>Weather Trends</h2>
+                    <div class="trends-container">
+                        <div class="trend-chart">
+                            <canvas id="trends-chart"></canvas>
+                        </div>
+                        <div class="trend-summary">
+                            <h3>Today vs Yesterday</h3>
+                            <div id="trend-comparison" class="trend-comparison"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button id="close-settings" class="close-btn">&times;</button>
+                </div>
+                <div class="settings-content">
+                    <div class="setting-group">
+                        <h3>Units</h3>
+                        <div class="setting-item">
+                            <label for="temp-unit">Temperature</label>
+                            <select id="temp-unit">
+                                <option value="metric">Celsius (°C)</option>
+                                <option value="imperial">Fahrenheit (°F)</option>
+                                <option value="kelvin">Kelvin (K)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="wind-unit">Wind Speed</label>
+                            <select id="wind-unit">
+                                <option value="kmh">km/h</option>
+                                <option value="mph">mph</option>
+                                <option value="ms">m/s</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <h3>Preferences</h3>
+                        <div class="setting-item">
+                            <label for="auto-location">Auto-detect location</label>
+                            <input type="checkbox" id="auto-location">
+                        </div>
+                        <div class="setting-item">
+                            <label for="notifications">Weather alerts</label>
+                            <input type="checkbox" id="notifications">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      
-      <!-- Location button -->
-      <button onclick="navigator.geolocation.getCurrentPosition(getWeatherByCoords)"
-              class="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-medium flex items-center justify-center gap-2 transition">
-        <i class="fas fa-location-arrow"></i>
-        Use my current location
-      </button>
+
+        <!-- Error Toast -->
+        <div id="error-toast" class="toast error-toast">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="error-message"></span>
+            <button id="close-error" class="toast-close">&times;</button>
+        </div>
+
+        <!-- Success Toast -->
+        <div id="success-toast" class="toast success-toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="success-message"></span>
+            <button id="close-success" class="toast-close">&times;</button>
+        </div>
+
+        <!-- Offline Indicator -->
+        <div id="offline-indicator" class="offline-indicator">
+            <i class="fas fa-wifi-slash"></i>
+            <span>You're offline. Showing cached data.</span>
+        </div>
     </div>
-    
-    <!-- Loading state -->
-    <div id="loader" class="hidden flex items-center justify-center p-6">
-      <div class="flex flex-col items-center">
-        <svg class="animate-spin h-6 w-6 text-blue-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-        </svg>
-        <span class="text-xs text-gray-500">Fetching weather data...</span>
-      </div>
-    </div>
-    
-    <!-- Error state -->
-    <div id="errorMsg" class="hidden p-3 bg-red-50 rounded-lg text-red-600 text-center my-4">
-      <div class="flex items-center justify-center gap-2">
-        <i class="fas fa-exclamation-circle"></i>
-        <span class="text-xs">City not found. Please try another location.</span>
-      </div>
-    </div>
-    
-    <!-- Footer -->
-    <div class="p-3 border-t border-gray-100 text-center text-xs text-gray-500">
-      <p>Built by <a href="https://dineshkumar-pro.web.app/" class="text-blue-500 hover:underline" target="_blank">DineshKumarV</a></p>
-    </div>
-  </div>
-  
-  <script src="script.js" defer></script>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/app.js"></script>
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBuQkjkIRrSKU5hCTqsatxwdKGT0JklYt0",
+    authDomain: "weatherlywave.firebaseapp.com",
+    projectId: "weatherlywave",
+    storageBucket: "weatherlywave.firebasestorage.app",
+    messagingSenderId: "525303509680",
+    appId: "1:525303509680:web:456cafaca03840067d4175",
+    measurementId: "G-B0HZMEEMSD"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
