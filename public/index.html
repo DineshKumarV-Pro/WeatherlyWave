@@ -1,313 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Primary Meta Tags -->
-<title>WeatherlyWave</title>
-<meta name="title" content="WeatherlyWave">
-<meta name="description" content="WeatherlyWave - Your comprehensive weather companion with current conditions, forecasts, and air quality data.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>WeatherlyWave</title>
 
-<!-- Favicon -->
-<link rel="icon" type="image/png" href="WW.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2196F3">
+  <link rel="icon" type="image/png" href="/logo.png">
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://weatherlywave.app/"> <!-- Replace with your actual domain -->
-<meta property="og:title" content="WeatherlyWave">
-
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://weatherlywave.app/">
-<meta property="twitter:title" content="WeatherlyWave">
-
-<!-- Viewport & Charset (Already present, but repeating for clarity) -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- PWA Meta Tags -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="WeatherlyWave">
-    <meta name="msapplication-TileColor" content="#2196F3">
-    <meta name="msapplication-tap-highlight" content="no">
+  <!-- PWA / Mobile -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet for maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Chart.js for hourly timeline -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #0b1120;
+      color: #f0f4fa;
+      transition: background-color 0.3s ease;
+      min-height: 100vh;
+    }
+    :root {
+      --animation-duration: 0.25s;
+      --bg-primary: #0b1120;
+      --bg-secondary: #1a1f2e;
+      --text-primary: #f0f4fa;
+      --text-secondary: #a0aec0;
+      --glass-bg: rgba(15, 23, 42, 0.65);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+    }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    .glass-luxury {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 2rem;
+      box-shadow: 0 30px 45px -25px rgba(0,0,0,0.8);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-luxury:hover {
+      border-color: rgba(96, 165, 250, 0.3);
+      box-shadow: 0 30px 50px -25px #1e3a8a;
+      transform: translateY(-2px);
+    }
+    #solar-card {
+      background: var(--glass-bg) !important;
+      backdrop-filter: blur(12px) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: 2rem !important;
+    }
+    .loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0b1120;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
+    }
+    .loader-wrapper.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .loader-content {
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    .loader-ring {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+    }
+    .loader-ring-circle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #3b82f6;
+      border-bottom-color: #8b5cf6;
+      animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+    .loader-ring-circle:nth-child(2) {
+      width: 80%;
+      height: 80%;
+      top: 10%;
+      left: 10%;
+      border-top-color: #f59e0b;
+      border-bottom-color: #10b981;
+      animation-duration: 2s;
+      animation-direction: reverse;
+    }
+    .loader-ring-circle:nth-child(3) {
+      width: 60%;
+      height: 60%;
+      top: 20%;
+      left: 20%;
+      border-top-color: #ef4444;
+      border-bottom-color: #3b82f6;
+      animation-duration: 2.5s;
+    }
+    .loader-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      text-shadow: 0 0 20px rgba(59,130,246,0.5);
+    }
+    .loader-text {
+      font-size: 1.5rem;
+      font-weight: 500;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa, #60a5fa);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 2s linear infinite;
+    }
+    .loader-subtext {
+      color: #6b7280;
+      margin-top: 10px;
+      font-size: 0.875rem;
+    }
+    .loader-progress-container {
+      width: 200px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin: 30px auto 0;
+      overflow: hidden;
+    }
+    .loader-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #f59e0b);
+      border-radius: 10px;
+      transition: width 0.2s ease;
+    }
+    .loader-location {
+      color: #4b5563;
+      margin-top: 20px;
+      font-size: 0.75rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .animate-slideIn {
+      animation: slideIn 0.3s ease forwards;
+    }
+    .animate-slideOut {
+      animation: slideOut 0.3s ease forwards;
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    @media (max-width: 768px) {
+      .glass-luxury { border-radius: 1.5rem; }
+      .text-9xl { font-size: 6rem; }
+    }
+    @media (max-width: 640px) {
+      .text-9xl { font-size: 4rem; }
+      .text-8xl { font-size: 3rem; }
+    }
+    @media (min-width: 1280px) {
+      body {
+        padding: 1.5rem !important;
+      }
+      .text-9xl {
+        font-size: 7rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    #toast-container {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+    #toast-container > * {
+      pointer-events: auto;
+    }
+    @media (max-width: 640px) {
+      body {
+        padding: 0.75rem !important;
+      }
+      #toast-container {
+        bottom: 0.75rem;
+        right: 0.75rem;
+        left: 0.75rem;
+      }
+      #toast-container > div {
+        width: auto !important;
+        max-width: none !important;
+      }
+    }
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://api.openweathermap.org">
-    <link rel="preconnect" href="https://tile.openweathermap.org">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/animations.css">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Leaflet for maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    /* Hide scrollbar while maintaining scrollability */
+    html {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    body::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
 </head>
-<body>
-    <div id="app">
-        <!-- Loading Screen -->
-        <div id="loading-screen" class="loading-screen">
-            <div class="loading-spinner"></div>
-            <p>Loading WeatherlyWave...</p>
-        </div>
+<body class="min-h-screen p-4 md:p-6 antialiased">
 
-        <!-- Header -->
-        <header class="header">
-            <div class="container">
-                <div class="header-content">
-                    <div class="logo">
-                        <img src="WW.png" alt="WeatherlyWave Logo" class="logo-img">
-                        <h1>WeatherlyWave</h1>
-                    </div>
-                    <div class="header-actions">
-                        <button id="search-btn" class="action-btn" aria-label="Search location">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button id="location-btn" class="action-btn" aria-label="Use current location">
-                            <i class="fas fa-location-arrow"></i>
-                        </button>
-                        <button id="settings-btn" class="action-btn" aria-label="Settings">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Search Modal -->
-        <div id="search-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Search Location</h2>
-                    <button id="close-search" class="close-btn">&times;</button>
-                </div>
-                <div class="search-container">
-                    <input type="text" id="search-input" placeholder="Enter city name..." autocomplete="off">
-                    <div id="search-suggestions" class="suggestions"></div>
-                </div>
-                <div class="recent-locations">
-                    <h3>Recent Locations</h3>
-                    <div id="recent-list" class="recent-list"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <main class="main">
-            <div class="container">
-                <!-- Current Weather Section -->
-                <section class="current-weather">
-                    <div class="weather-card">
-                        <div class="weather-header">
-                            <div class="location-info">
-                                <h2 id="current-location">Chennai, IN</h2>
-                                <p id="current-date">Thu, Jul 10, 04:58:59 PM</p>
-                            </div>
-                            <div class="weather-icon-container">
-                                <div id="weather-icon" class="weather-icon"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="weather-main">
-                            <div class="temperature">
-                                <span id="main-temp">31°C</span>
-                                <span id="weather-desc">overcast clouds</span>
-                            </div>
-                            <div class="weather-details">
-                                <div class="detail-item">
-                                    <i class="fas fa-wind"></i>
-                                    <span id="wind-speed">25 km/h</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-tint"></i>
-                                    <span id="humidity">73%</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-thermometer-half"></i>
-                                    <span id="pressure">1003 hPa</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-eye"></i>
-                                    <span id="visibility">10.0 km</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sun-times">
-                            <div class="sun-item">
-                                <i class="fas fa-sun"></i>
-                                <div>
-                                    <span class="label">Sunrise</span>
-                                    <span id="sunrise">6:24 AM</span>
-                                </div>
-                            </div>
-                            <div class="sun-item">
-                                <i class="fas fa-moon"></i>
-                                <div>
-                                    <span class="label">Sunset</span>
-                                    <span id="sunset">6:45 PM</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Hourly Forecast -->
-                <section class="hourly-forecast">
-                    <h2>48-Hour Forecast</h2>
-                    <div class="hourly-container">
-                        <div id="hourly-timeline" class="hourly-timeline"></div>
-                    </div>
-                </section>
-
-                <!-- 5-Day Forecast -->
-                <section class="daily-forecast">
-                    <h2>5-Day Forecast</h2>
-                    <div id="daily-cards" class="daily-cards"></div>
-                </section>
-
-                <!-- Air Quality Section -->
-                <section class="air-quality">
-                    <h2>Air Quality</h2>
-                    <div id="air-quality-card" class="air-quality-card">
-                        <div class="aqi-main">
-                            <div class="aqi-value">
-                                <span id="aqi-index">-</span>
-                                <span id="aqi-label">Loading...</span>
-                            </div>
-                            <div class="aqi-description">
-                                <p id="aqi-desc">Checking air quality...</p>
-                            </div>
-                        </div>
-                        <div class="aqi-components">
-                            <div class="component">
-                                <span class="label">PM2.5</span>
-                                <span id="pm25">-</span>
-                            </div>
-                            <div class="component">
-                                <span class="label">PM10</span>
-                                <span id="pm10">-</span>
-                            </div>
-                            <div class="component">
-                                <span class="label">O₃</span>
-                                <span id="o3">-</span>
-                            </div>
-                            <div class="component">
-                                <span class="label">NO₂</span>
-                                <span id="no2">-</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Weather Maps -->
-                <section class="weather-maps">
-                    <h2>Weather Maps</h2>
-                    <div class="map-controls">
-                        <button class="map-btn active" data-layer="temp">Temperature</button>
-                        <button class="map-btn" data-layer="precipitation">Precipitation</button>
-                        <button class="map-btn" data-layer="clouds">Clouds</button>
-                        <button class="map-btn" data-layer="wind">Wind</button>
-                    </div>
-                    <div id="weather-map" class="weather-map"></div>
-                </section>
-
-                <!-- Weather Trends -->
-                <section class="weather-trends">
-                    <h2>Weather Trends</h2>
-                    <div class="trends-container">
-                        <div class="trend-chart">
-                            <canvas id="trends-chart"></canvas>
-                        </div>
-                        <div class="trend-summary">
-                            <h3>Today vs Yesterday</h3>
-                            <div id="trend-comparison" class="trend-comparison"></div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <!-- Settings Modal -->
-        <div id="settings-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Settings</h2>
-                    <button id="close-settings" class="close-btn">&times;</button>
-                </div>
-                <div class="settings-content">
-                    <div class="setting-group">
-                        <h3>Units</h3>
-                        <div class="setting-item">
-                            <label for="temp-unit">Temperature</label>
-                            <select id="temp-unit">
-                                <option value="metric">Celsius (°C)</option>
-                                <option value="imperial">Fahrenheit (°F)</option>
-                                <option value="kelvin">Kelvin (K)</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label for="wind-unit">Wind Speed</label>
-                            <select id="wind-unit">
-                                <option value="kmh">km/h</option>
-                                <option value="mph">mph</option>
-                                <option value="ms">m/s</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="setting-group">
-                        <h3>Preferences</h3>
-                        <div class="setting-item">
-                            <label for="auto-location">Auto-detect location</label>
-                            <input type="checkbox" id="auto-location">
-                        </div>
-                        <div class="setting-item">
-                            <label for="notifications">Weather alerts</label>
-                            <input type="checkbox" id="notifications">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Error Toast -->
-        <div id="error-toast" class="toast error-toast">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span id="error-message"></span>
-            <button id="close-error" class="toast-close">&times;</button>
-        </div>
-
-        <!-- Success Toast -->
-        <div id="success-toast" class="toast success-toast">
-            <i class="fas fa-check-circle"></i>
-            <span id="success-message"></span>
-            <button id="close-success" class="toast-close">&times;</button>
-        </div>
-
-        <!-- Offline Indicator -->
-        <div id="offline-indicator" class="offline-indicator">
-            <i class="fas fa-wifi-slash"></i>
-            <span>You're offline. Showing cached data.</span>
-        </div>
+  <div class="loader-wrapper" id="loader-screen">
+    <div class="loader-content">
+      <div class="loader-ring">
+        <div class="loader-ring-circle"></div>
+        <div class="loader-ring-circle"></div>
+        <div class="loader-ring-circle"></div>
+        <div class="loader-logo"> <img src="/logo.png" alt="WeatherlyWave" class="w-12 h-12" /></div>
+      </div>
+      <h2 class="loader-text" id="loader-message">WeatherlyWave</h2>
+      <p class="loader-subtext">Initializing weather intelligence...</p>
+      <div class="loader-progress-container">
+        <div class="loader-progress-bar" id="loader-progress"></div>
+      </div>
+      <p class="loader-location" id="loader-location">Chennai · 27°C · partly cloudy</p>
     </div>
+  </div>
 
-    <!-- Scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/weather.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/maps.js"></script>
-    <script src="js/app.js"></script>
-    <script type="module">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8">
+    <header class="flex flex-col lg:flex-row justify-between items-center gap-4 mb-6 sm:mb-10" id="main-header"></header>
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8" id="hero-grid">
+      <div class="lg:col-span-1 xl:col-span-1 glass-luxury p-5 sm:p-7 min-h-[280px]" id="current-weather-card"></div>
+      <div class="lg:col-span-1 xl:col-span-2 glass-luxury p-4 sm:p-6 min-h-[300px]" id="forecast-card"></div>
+      <div class="lg:col-span-2 xl:col-span-1 glass-luxury p-4 sm:p-5 min-h-[300px]" id="solar-card"></div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 sm:gap-3 mb-6 sm:mb-8" id="kpi-row"></div>
+    <div class="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8" id="hourly-section">
+      <div class="glass-luxury p-4 sm:p-6" id="hourly-card"></div>
+    </div>
+    <footer id="main-footer" class="text-center text-xs text-gray-500 mt-8 pt-4 border-t border-white/5 flex justify-center gap-3"></footer>
+  </div>
+
+  <script type="module" src="js/utils/dateFormatter.js"></script>
+  <script type="module" src="js/utils/unitConverter.js"></script>
+  <script type="module" src="js/utils/domHelpers.js"></script>
+  <script type="module" src="js/api/openweather.js"></script>
+  <script type="module" src="js/api/tomorrowio.js"></script>
+  <script type="module" src="js/core/weatherEngine.js"></script>
+  <script type="module" src="js/core/weatherAlerts.js"></script>
+  <script type="module" src="js/core/performanceManager.js"></script>
+  <script type="module" src="js/search/SearchManager.js"></script>
+  <script type="module" src="js/settings/SettingsManager.js"></script>
+  <script type="module" src="js/ui/loaderUI.js"></script>
+  <script type="module" src="js/ui/headerUI.js"></script>
+  <script type="module" src="js/ui/currentUI.js"></script>
+  <script type="module" src="js/ui/forecastUI.js"></script>
+  <script type="module" src="js/ui/hourlyUI.js"></script>
+  <script type="module" src="js/ui/solarUI.js"></script>
+  <script type="module" src="js/ui/kpiUI.js"></script>
+  <script type="module" src="js/ui/alertsUI.js"></script>
+  <script type="module" src="js/core/app.js"></script>
+  <script type="module" src="sw.js"></script>
+  <script type="module" src="manifest.json"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+          console.log('Service Worker registered', reg);
+        }).catch(err => {
+          console.log('Service Worker registration failed', err);
+        });
+      });
+    }
+  </script>
+  <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
