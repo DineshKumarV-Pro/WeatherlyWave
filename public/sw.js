@@ -1,4 +1,4 @@
-const CACHE_NAME = 'weatherlywave-v5';
+const CACHE_NAME = 'weatherlywave-v5.0.2';
 const urlsToCache = [
   '/',
   '/index.html',
