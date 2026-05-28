@@ -1,0 +1,281 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 222 59% 8%;
+  --foreground: 213 42% 96%;
+  --card: 222 47% 14%;
+  --card-foreground: 213 42% 96%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 222 32% 18%;
+  --secondary-foreground: 213 42% 96%;
+  --muted: 222 28% 20%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 258 90% 66%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --border: 0 0% 100% / 0.08;
+  --input: 222 32% 18%;
+  --ring: 217 91% 60%;
+  --animation-duration: 0.25s;
+  --weather-a: rgba(14, 165, 233, 0.24);
+  --weather-b: rgba(16, 185, 129, 0.16);
+  --weather-c: rgba(99, 102, 241, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: #050914;
+  color: #f0f4fa;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+@layer components {
+  .weather-shell {
+    min-height: 100vh;
+    background:
+      linear-gradient(115deg, var(--weather-a), transparent 28%),
+      linear-gradient(245deg, var(--weather-b), transparent 34%),
+      linear-gradient(135deg, rgba(15, 23, 42, 0.97), rgba(2, 6, 23, 0.98) 55%, rgba(8, 13, 28, 1));
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .weather-shell::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(to bottom, black, transparent 82%);
+  }
+
+  .weather-shell::after {
+    content: "";
+    position: fixed;
+    inset: 18% -18% auto -18%;
+    height: 220px;
+    background: linear-gradient(90deg, transparent, var(--weather-c), transparent);
+    filter: blur(18px);
+    opacity: 0.45;
+    pointer-events: none;
+    transform: rotate(-8deg);
+  }
+
+  .weather-clear {
+    --weather-a: rgba(251, 191, 36, 0.25);
+    --weather-b: rgba(56, 189, 248, 0.18);
+    --weather-c: rgba(249, 115, 22, 0.12);
+  }
+
+  .weather-cloudy {
+    --weather-a: rgba(148, 163, 184, 0.22);
+    --weather-b: rgba(14, 165, 233, 0.14);
+    --weather-c: rgba(100, 116, 139, 0.14);
+  }
+
+  .weather-rain {
+    --weather-a: rgba(14, 165, 233, 0.24);
+    --weather-b: rgba(45, 212, 191, 0.13);
+    --weather-c: rgba(59, 130, 246, 0.16);
+  }
+
+  .weather-storm {
+    --weather-a: rgba(129, 140, 248, 0.25);
+    --weather-b: rgba(245, 158, 11, 0.1);
+    --weather-c: rgba(76, 29, 149, 0.22);
+  }
+
+  .weather-heat {
+    --weather-a: rgba(249, 115, 22, 0.28);
+    --weather-b: rgba(244, 63, 94, 0.12);
+    --weather-c: rgba(251, 191, 36, 0.16);
+  }
+
+  .weather-night {
+    --weather-a: rgba(59, 130, 246, 0.16);
+    --weather-b: rgba(168, 85, 247, 0.14);
+    --weather-c: rgba(15, 23, 42, 0.3);
+  }
+
+  .glass-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.48));
+    box-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(18px);
+    transition:
+      border-color var(--animation-duration) ease,
+      box-shadow var(--animation-duration) ease,
+      transform var(--animation-duration) ease;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(125, 211, 252, 0.24);
+    box-shadow: 0 28px 70px -34px rgba(14, 165, 233, 0.38);
+  }
+
+  .metric-surface {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.875rem;
+    background: rgba(255, 255, 255, 0.055);
+  }
+
+  .panel-surface {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+    background: rgba(2, 6, 23, 0.42);
+    backdrop-filter: blur(18px);
+  }
+
+  .hero-surface {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    background:
+      linear-gradient(140deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.035)),
+      linear-gradient(110deg, var(--weather-a), transparent 36%),
+      rgba(15, 23, 42, 0.64);
+    box-shadow: 0 34px 90px -48px rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(22px);
+  }
+
+  .weather-band {
+    position: absolute;
+    height: 13rem;
+    width: 42rem;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    filter: blur(1px);
+    transform: rotate(-18deg);
+    animation: weather-drift 18s ease-in-out infinite alternate;
+  }
+
+  .hero-rain-drop {
+    position: absolute;
+    top: -18%;
+    height: 42%;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(186, 230, 253, 0.48), transparent);
+    transform: rotate(14deg);
+    animation: rain-fall linear infinite;
+  }
+
+  .hero-mist {
+    position: absolute;
+    left: -18%;
+    height: 5rem;
+    width: 70%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(226, 232, 240, 0.1), transparent);
+    filter: blur(8px);
+    animation: mist-drift 18s ease-in-out infinite alternate;
+  }
+
+  .hero-star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 0 18px rgba(186, 230, 253, 0.8);
+    animation: star-pulse 3s ease-in-out infinite;
+  }
+
+  .section-card {
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 1.125rem;
+    background: rgba(15, 23, 42, 0.58);
+    box-shadow: 0 20px 42px -32px rgba(0, 0, 0, 0.8);
+  }
+}
+
+@keyframes weather-drift {
+  from {
+    translate: -2rem 0;
+    opacity: 0.35;
+  }
+
+  to {
+    translate: 2rem 1rem;
+    opacity: 0.65;
+  }
+}
+
+@keyframes rain-fall {
+  to {
+    transform: translate3d(5rem, 150%, 0) rotate(14deg);
+  }
+}
+
+@keyframes mist-drift {
+  to {
+    translate: 18rem 0;
+  }
+}
+
+@keyframes star-pulse {
+  50% {
+    opacity: 0.25;
+    scale: 0.7;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    background: #050914;
+  }
+
+  .hero-surface,
+  .glass-card {
+    border-radius: 1.125rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.reduce-motion .weather-band,
+.reduce-motion .hero-rain-drop,
+.reduce-motion .hero-mist,
+.reduce-motion .hero-star {
+  animation: none;
+}
